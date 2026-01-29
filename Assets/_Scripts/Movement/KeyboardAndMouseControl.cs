@@ -7,15 +7,20 @@ public class KeyboardAndMouseControl : MonoBehaviour
 
     public Transform camera;
 
+    Rigidbody rb;
+
     float xRotation = 0f;
 
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         Look();
         Move();
@@ -54,6 +59,6 @@ public class KeyboardAndMouseControl : MonoBehaviour
             moveZ -= 1f;
 
         Vector3 move = (transform.right * moveX + transform.forward * moveZ).normalized;
-        transform.Translate(move * moveSpeed * Time.deltaTime, Space.World);
+        rb.linearVelocity = new Vector3(move.x * moveSpeed, rb.linearVelocity.y, move.z * moveSpeed);
     }
 }

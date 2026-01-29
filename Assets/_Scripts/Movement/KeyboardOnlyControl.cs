@@ -5,7 +5,15 @@ public class KeyboardOnlyControl : MonoBehaviour
     public float moveSpeed = 5f;
     public float turnSpeed = 90f; //degrees per second
 
-    void Update()
+    Rigidbody rb;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
+    }
+
+    void FixedUpdate()
     {
         HandleMovementAndTurning();
     }
@@ -33,12 +41,11 @@ public class KeyboardOnlyControl : MonoBehaviour
             turnY += 1f;
         }
 
-        //Movement
-        Vector3 movement = (transform.forward * moveZ).normalized;
+        //Rotation
+        transform.Rotate(Vector3.up * turnY * turnSpeed * Time.fixedDeltaTime);
 
-        transform.Translate(movement * moveSpeed * Time.deltaTime, Space.World);
-
-        //Camera direction
-        transform.Rotate(Vector3.up * turnY * turnSpeed * Time.deltaTime);
+        //Movement using Rigidbody
+        Vector3 move = transform.forward * moveZ * moveSpeed;
+        rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
     }
 }
